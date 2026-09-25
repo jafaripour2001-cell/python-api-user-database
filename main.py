@@ -20,8 +20,10 @@ def create_database():
     connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
 
+    cursor.execute("DROP TABLE IF EXISTS users")
+
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
+        CREATE TABLE users (
             id INTEGER PRIMARY KEY,
             name TEXT,
             username TEXT,
@@ -55,6 +57,30 @@ def save_users(users):
     connection.close()
 
 
+def show_users():
+    connection = sqlite3.connect(DB_NAME)
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT id, name, username, email, city
+        FROM users
+    """)
+
+    users = cursor.fetchall()
+
+    connection.close()
+
+    print("\nفهرست کاربران ذخیره شده در SQLite:")
+
+    for user in users:
+        print("--------------------")
+        print("ID:", user[0])
+        print("نام:", user[1])
+        print("نام کاربری:", user[2])
+        print("ایمیل:", user[3])
+        print("شهر:", user[4])
+
+
 def main():
     print("برنامه شروع شد")
 
@@ -68,6 +94,7 @@ def main():
 
     create_database()
     save_users(users)
+    show_users()
 
     print("اطلاعات با موفقیت در SQLite ذخیره شد.")
 
